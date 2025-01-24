@@ -1,8 +1,34 @@
-import React from 'react'
+import React from 'react';
+import { Absence } from '../../types';
 
-const AbsenceList = () => {
+export interface AbsenceListProps {
+  data?: Absence[];
+}
+
+const AbsenceList: React.FC<AbsenceListProps> = ({ data }) => {
   return (
-    <div data-testid="absence-list" />
+    <table data-testid="absence-list">
+      <thead>
+      <tr>
+        <th>Employee Name</th>
+        <th>Start Date</th>
+        <th>Days</th>
+        <th>Absence Type</th>
+        <th>Status</th>
+      </tr>
+      </thead>
+      <tbody>
+      {data?.map((absence) => (
+        <tr key={absence.id} data-testid="option">
+        <td>{absence.employee.firstName} {absence.employee.lastName}</td>
+        <td>{absence.startDate}</td>
+        <td>{absence.days}</td>
+        <td>{absence.absenceType}</td>
+        <td>{absence.approved ? 'Approved' : 'Not Approved'}</td>
+        </tr>
+      ))}
+      </tbody>
+    </table>
   )
 }
 
