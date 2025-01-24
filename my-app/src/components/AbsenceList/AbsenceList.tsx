@@ -10,6 +10,7 @@ const AbsenceList: React.FC<AbsenceListProps> = ({ data }) => {
     <table data-testid="absence-list">
       <thead>
       <tr>
+        <th>Employee ID</th>
         <th>Employee Name</th>
         <th>Start Date</th>
         <th>Days</th>
@@ -20,6 +21,7 @@ const AbsenceList: React.FC<AbsenceListProps> = ({ data }) => {
       <tbody>
       {data?.map((absence) => (
         <tr key={absence.id} data-testid="option">
+        <td>{absence.id}</td>
         <td>{absence.employee.firstName} {absence.employee.lastName}</td>
         <td>{absence.startDate}</td>
         <td>{absence.days}</td>
