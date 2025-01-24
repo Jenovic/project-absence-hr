@@ -7,30 +7,28 @@ export interface AbsenceListProps {
 
 const AbsenceList: React.FC<AbsenceListProps> = ({ data }) => {
   return (
-    <table data-testid="absence-list">
-      <thead>
-      <tr>
-        <th>Employee ID</th>
-        <th>Employee Name</th>
-        <th>Start Date</th>
-        <th>Days</th>
-        <th>Absence Type</th>
-        <th>Status</th>
-      </tr>
-      </thead>
-      <tbody>
-      {data?.map((absence) => (
-        <tr key={absence.id} data-testid="option">
-        <td>{absence.id}</td>
-        <td>{absence.employee.firstName} {absence.employee.lastName}</td>
-        <td>{absence.startDate}</td>
-        <td>{absence.days}</td>
-        <td>{absence.absenceType}</td>
-        <td>{absence.approved ? 'Approved' : 'Not Approved'}</td>
+    <div className='relative overflow-x-auto'>
+      <table data-testid="absence-list">
+        <thead>
+        <tr>
+          {['Start Date', 'End Date', 'Employee Name', 'approved/pending approval', 'Absence Type'].map((header) => (
+          <th scope="col" key={header}>{header}</th>
+          ))}
         </tr>
-      ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+        {data?.map((absence) => (
+          <tr key={absence.id} data-testid="absence">
+          <td scope="col">{absence.startDate}</td>
+          <td scope="col">{absence.startDate}</td>
+          <td scope="col">{absence.employee.firstName} {absence.employee.lastName}</td>
+          <td scope="col">{absence.approved ? 'Approved' : 'Pending'}</td>
+          <td scope="col">{absence.absenceType}</td>
+          </tr>
+        ))}
+        </tbody>
+      </table>
+    </div>
   )
 }
 

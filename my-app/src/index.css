@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.table-shadow:hover {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background-color: #e0f2fe;
+}
+
+@layer base {
+    .prose-sys { @apply prose prose-a:no-underline prose-a:cursor-pointer prose-li:p-0 prose-li:m-0; }
+    table { @apply w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400; }
+    table thead { @apply text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400; }
+    table thead tr { @apply bg-sky-700 text-white; }
+    table tbody tr { @apply bg-white border-b dark:bg-gray-800 dark:border-gray-700 table-shadow; }
+    table th { @apply !px-3 !py-3 !text-white; }
+    table td { @apply text-[13px] !text-black !px-3 !py-3; }
+}
