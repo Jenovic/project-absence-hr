@@ -1,9 +1,30 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
+import ErrorBoundary from './components/ErrorBoundary';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/Absences/i);
-  expect(linkElement).toBeInTheDocument();
+describe('App', () => {
+  it('Should render app title', () => {
+    render(<App />);
+    const linkElement = screen.getByRole('heading', { name: /Absence Manager/i });
+    expect(linkElement).toBeInTheDocument();
+  });
+
+  it('shows an fallback message when an unhandled exception is thrown', () => {
+    const spy = jest.spyOn(console, "error");
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    spy.mockImplementation(() => {});
+    const ThrowError = () => {
+      throw new Error('Test');
+    };
+    render(
+      <ErrorBoundary>
+        <ThrowError />
+        <p>Everything is fine</p>
+      </ErrorBoundary>
+    );
+    expect(screen.queryByText(/Everything is fine/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/Something went wrong. Please try refreshing the page/i)).toBeInTheDocument();
+    spy.mockRestore();
+  });
 });
