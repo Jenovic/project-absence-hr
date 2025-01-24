@@ -11,20 +11,22 @@ describe('App', () => {
   });
 
   it('shows an fallback message when an unhandled exception is thrown', () => {
-    const spy = jest.spyOn(console, "error");
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    spy.mockImplementation(() => {});
+    const originalError = console.error;
+    console.error = jest.fn();
+
     const ThrowError = () => {
       throw new Error('Test');
     };
+    
     render(
       <ErrorBoundary>
         <ThrowError />
         <p>Everything is fine</p>
       </ErrorBoundary>
     );
+
     expect(screen.queryByText(/Everything is fine/i)).not.toBeInTheDocument();
     expect(screen.getByText(/Something went wrong. Please try refreshing the page/i)).toBeInTheDocument();
-    spy.mockRestore();
+    console.error = originalError;
   });
 });
