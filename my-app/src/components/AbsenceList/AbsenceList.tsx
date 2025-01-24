@@ -1,5 +1,6 @@
 import React from 'react';
 import { Absence } from '../../types';
+import { calculateEndDate } from '../../utils/calculateEndDate';
 
 export interface AbsenceListProps {
   data?: Absence[];
@@ -20,7 +21,7 @@ const AbsenceList: React.FC<AbsenceListProps> = ({ data }) => {
         {data?.map((absence) => (
           <tr key={absence.id} data-testid="absence">
           <td scope="col">{absence.startDate}</td>
-          <td scope="col">{absence.startDate}</td>
+          <td scope="col">{calculateEndDate(absence.startDate, absence.days)}</td>
           <td scope="col">{absence.employee.firstName} {absence.employee.lastName}</td>
           <td scope="col">{absence.approved ? 'Approved' : 'Pending'}</td>
           <td scope="col">{absence.absenceType}</td>
