@@ -2,17 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    .prose-sys { 
+        @apply prose prose-a:no-underline prose-a:cursor-pointer prose-li:p-0 prose-li:m-0
+        prose-table:max-sm:mt-0;
+     }
+    table, thead, tbody, th, td, tr { @apply max-sm:block; }
+    table { @apply w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400; }
+    table thead { @apply text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400; }
+    table thead tr { @apply bg-sky-700 text-white max-sm:absolute max-sm:-top-[9999px] max-sm:-left-[9999px]; }
+    table tbody tr { @apply bg-white border-b dark:bg-gray-800 dark:border-gray-700 table-shadow; }
+    table tr { @apply max-sm:mb-4 max-sm:border max-sm:border-gray-400; }
+    table th { @apply !px-3 !py-3 !text-white; }
+    table td { 
+        @apply text-[13px] !text-black !px-3 !py-3 max-sm:!py-1 max-sm:border-0 max-sm:relative 
+        max-sm:pl-[50%] max-sm:flex max-sm:justify-end;
+    }
+}
+
 .table-shadow:hover {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     background-color: #e0f2fe;
 }
 
-@layer base {
-    .prose-sys { @apply prose prose-a:no-underline prose-a:cursor-pointer prose-li:p-0 prose-li:m-0; }
-    table { @apply w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400; }
-    table thead { @apply text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400; }
-    table thead tr { @apply bg-sky-700 text-white; }
-    table tbody tr { @apply bg-white border-b dark:bg-gray-800 dark:border-gray-700 table-shadow; }
-    table th { @apply !px-3 !py-3 !text-white; }
-    table td { @apply text-[13px] !text-black !px-3 !py-3; }
+@media screen and (max-width: 639px) {
+    td:before {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      width: 45%;
+      padding-right: 10px;
+      white-space: nowrap;
+      content: attr(data-label);
+      font-weight: bold;
+    }
 }
