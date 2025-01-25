@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, lazy, Suspense } from 'react';
 import { Absence, SortParams } from '../../types';
-import { sortAbsences } from '../../utils/sortAbsences';
-import { absenceListheaders } from '../../utils/absenceListConstants';
+import { sortAbsences, absenceListheaders } from '../../utils';
 import AbsenceRow from './AbsenceRow';
+const AbsenceCard = lazy(() => import('./AbsenceCard'));
 
 export interface AbsenceListProps {
   data?: Absence[];
@@ -10,6 +10,10 @@ export interface AbsenceListProps {
 
 const AbsenceList: React.FC<AbsenceListProps> = ({ data }) => {
   const [sortParams, setSortParams] = useState<SortParams | null>(null);
+  const [cardOpen, setCardOpen] = useState(false);
+  const [employeeName, setEmployeeName] = useState<string>('');
+  const [selectedEmployeeAbsences, setSelectedEmployeeAbsences] = useState<Absence[]>([]);
+
   const sortedData = useMemo(() => sortAbsences(data!, sortParams), [data, sortParams]);
 
   const handleSort = (key: string) => {
@@ -20,6 +24,16 @@ const AbsenceList: React.FC<AbsenceListProps> = ({ data }) => {
     setSortParams({ key, direction });
   };
 
+  const handleEmployeeClick = (employeeId: string) => {
+    const employeeAbsences = sortedData?.filter(absence => absence.employee.id === employeeId) || [];
+    setEmployeeName(prevName => {
+      const newName = `${employeeAbsences[0].employee.firstName} ${employeeAbsences[0].employee.lastName}`;
+      return newName;
+    });
+    setSelectedEmployeeAbsences(prevAbsences => { return employeeAbsences; });
+    setCardOpen(true);
+  };
+  
   return (
     <div className='relative overflow-x-auto'>
       <table data-testid="absence-list">
@@ -39,10 +53,25 @@ const AbsenceList: React.FC<AbsenceListProps> = ({ data }) => {
         </thead>
         <tbody>
           {sortedData?.map((absence) => (
-            <AbsenceRow key={absence.id} absence={absence} headers={absenceListheaders} />
+            <AbsenceRow 
+              key={absence.id} 
+              absence={absence} 
+              headers={absenceListheaders} 
+              onEmployeeClick={handleEmployeeClick}
+            />
           ))}
         </tbody>
       </table>
+      <Suspense fallback={<div>Loading...</div>}>
+        {cardOpen && (
+          <AbsenceCard 
+            isOpen={cardOpen} 
+            onClose={() => setCardOpen(false)}
+            employeeName={employeeName} 
+            employeeAbsences={selectedEmployeeAbsences} 
+          />
+        )}
+      </Suspense>
     </div>
   )
 }

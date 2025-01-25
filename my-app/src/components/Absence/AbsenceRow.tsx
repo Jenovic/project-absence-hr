@@ -1,6 +1,6 @@
 import React from 'react';
 import { Absence } from '../../types';
-import { calculateEndDate } from '../../utils/calculateEndDate';
+import { calculateEndDate } from '../../utils';
 import { useGetAbsenceConflictsQuery } from '../../services/brighthrApi';
 
 export interface AbsenceRowProps {
@@ -9,12 +9,13 @@ export interface AbsenceRowProps {
         key: string;
         label: string;
     }[];
+    onEmployeeClick: (employeeId: string) => void;
 }
 
-const AbsenceRow: React.FC<AbsenceRowProps> = ({ absence, headers }) => {
+const AbsenceRow: React.FC<AbsenceRowProps> = ({ absence, headers, onEmployeeClick }) => {
     const { data, isLoading } = useGetAbsenceConflictsQuery(absence.id) || {};
     return (
-        <tr key={absence.id} data-testid="absence">
+        <tr key={absence.id} data-testid="absence" onClick={() => onEmployeeClick(absence.employee.id)} className="cursor-pointer hover:underline">
             <td data-label={headers[0].label}><span>{absence.startDate}</span></td>
             <td data-label={headers[1].label}><span>{calculateEndDate(absence.startDate, absence.days)}</span></td>
             <td data-label={headers[2].label}><span>{absence.employee.firstName} {absence.employee.lastName}</span></td>
@@ -24,7 +25,7 @@ const AbsenceRow: React.FC<AbsenceRowProps> = ({ absence, headers }) => {
                 {isLoading ? (
                     <span>Loading...</span>
                 ) : (
-                    <span className={data?.conflicts ? 'text-red-500 font-bold' : 'text-green-500'}>
+                    <span className={`${data?.conflicts ? 'text-red-700' : 'text-green-700'} font-bold`}>
                         {data?.conflicts ? 'Conflict' : 'No Conflict'}
                     </span>
                 )}
@@ -33,4 +34,4 @@ const AbsenceRow: React.FC<AbsenceRowProps> = ({ absence, headers }) => {
     );
 }
 
-export default AbsenceRow
+export default AbsenceRow;
