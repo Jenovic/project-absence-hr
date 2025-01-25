@@ -14,3 +14,8 @@ export interface Absence {
 export interface conflictingAbsence {
   conflicts: boolean;
 }
+
+export type SortParams = {
+  key: string;
+  direction: 'asc' | 'desc';
+};

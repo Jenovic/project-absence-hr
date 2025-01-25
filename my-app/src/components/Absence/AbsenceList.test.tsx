@@ -1,10 +1,12 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import { calculateEndDate } from '../../utils/calculateEndDate';
 import { brighthrApi, useGetAbsenceConflictsQuery } from '../../services/brighthrApi';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { mockAbsenceData } from '../../__mocks__/brighthrApi';
+import { sortAbsences } from '../../utils/sortAbsences';
+import { Absence } from '../../types';
 import AbsenceList from './AbsenceList';
 
 jest.mock('../../services/brighthrApi', () => ({
@@ -70,5 +72,32 @@ describe('<AbsenceList />', () => {
       expect(useGetAbsenceConflictsQuery).toHaveBeenCalledWith(absence.id);
     });
   });
+
+  it('should sort absences when clicking on column headers', async () => {
+    // Click on 'Start Date' header to sort
+    fireEvent.click(screen.getByText('Start Date'));
+
+    // Use sortAbsences to get the expected order
+    const sortedData: Absence[] = sortAbsences(mockAbsenceData, { key: 'startDate', direction: 'asc' });
+    const sortedRows = screen.getAllByTestId('absence');
+
+    // Check if the order matches the sorted data
+    sortedData.forEach((absence, index) => {
+      expect(within(sortedRows[index]).getByText(absence.employee.firstName + ' ' + absence.employee.lastName)).toBeInTheDocument();
+    });
+
+    // Click again to reverse the order
+    fireEvent.click(screen.getByText('Start Date'));
+
+    // Use sortAbsences to get the expected reverse order
+    const reverseSortedData = sortAbsences(mockAbsenceData, { key: 'startDate', direction: 'desc' });
+    const reverseSortedRows = screen.getAllByTestId('absence');
+
+    // Check if the order matches the reverse sorted data
+    reverseSortedData.forEach((absence, index) => {
+      expect(within(reverseSortedRows[index]).getByText(absence.employee.firstName + ' ' + absence.employee.lastName)).toBeInTheDocument();
+    });
+  });
+
   
 });
