@@ -1,6 +1,6 @@
 import ErrorBoundary from './components/ErrorBoundary';
-import AbsenceList from './components/AbsenceList/AbsenceList';
-import { useGetAbsencesQuery, useGetAbsenceConflictsQuery } from './services/brighthrApi';
+import AbsenceList from './components/Absence/AbsenceList';
+import { useGetAbsencesQuery } from './services/brighthrApi';
 import Loader from './components/Loader';
 
 function App() {
