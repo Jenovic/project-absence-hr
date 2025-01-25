@@ -1,23 +1,13 @@
-import { useEffect, useState } from 'react';
-import { getAbsences } from './services/absences';
 import ErrorBoundary from './components/ErrorBoundary';
 import AbsenceList from './components/AbsenceList/AbsenceList';
+import { useGetAbsencesQuery, useGetAbsenceConflictsQuery } from './services/brighthrApi';
+import Loader from './components/Loader';
 
 function App() {
-  const [absences, setAbsences] = useState([]);
+  const {data: absences, error, isLoading } = useGetAbsencesQuery();
 
-  useEffect(() => {
-    const loadAbsences = async () => {
-      try {
-        const { data } = await getAbsences();
-        setAbsences(data);
-      } 
-      catch (error) {
-        console.error('Error while fetching absences', error);
-      }
-    }
-    loadAbsences();
-  }, []);
+  if (isLoading) return <Loader />;
+  if (error) return <div>There was an error</div>;
 
   return (
     <ErrorBoundary>
