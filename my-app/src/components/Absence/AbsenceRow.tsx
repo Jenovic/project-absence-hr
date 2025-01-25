@@ -5,19 +5,22 @@ import { useGetAbsenceConflictsQuery } from '../../services/brighthrApi';
 
 export interface AbsenceRowProps {
     absence: Absence;
-    headers: string[];
+    headers: {
+        key: string;
+        label: string;
+    }[];
 }
 
 const AbsenceRow: React.FC<AbsenceRowProps> = ({ absence, headers }) => {
-    const { data, isLoading } = useGetAbsenceConflictsQuery(absence.id);
+    const { data, isLoading } = useGetAbsenceConflictsQuery(absence.id) || {};
     return (
         <tr key={absence.id} data-testid="absence">
-            <td data-label={headers[0]}><span>{absence.startDate}</span></td>
-            <td data-label={headers[1]}><span>{calculateEndDate(absence.startDate, absence.days)}</span></td>
-            <td data-label={headers[2]}><span>{absence.employee.firstName} {absence.employee.lastName}</span></td>
-            <td data-label={headers[3]}><span>{absence.approved ? 'Approved' : 'Pending'}</span></td>
-            <td data-label={headers[4]}><span>{absence.absenceType}</span></td>
-            <td data-label={headers[5]}>
+            <td data-label={headers[0].label}><span>{absence.startDate}</span></td>
+            <td data-label={headers[1].label}><span>{calculateEndDate(absence.startDate, absence.days)}</span></td>
+            <td data-label={headers[2].label}><span>{absence.employee.firstName} {absence.employee.lastName}</span></td>
+            <td data-label={headers[3].label}><span>{absence.approved ? 'Approved' : 'Pending'}</span></td>
+            <td data-label={headers[4].label}><span>{absence.absenceType}</span></td>
+            <td data-label={headers[5].label}>
                 {isLoading ? (
                     <span>Loading...</span>
                 ) : (
