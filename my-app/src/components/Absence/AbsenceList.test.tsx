@@ -1,11 +1,10 @@
 import React from 'react';
 import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
-import { calculateEndDate } from '../../utils/calculateEndDate';
+import { calculateEndDate, sortAbsences } from '../../utils';
 import { brighthrApi, useGetAbsenceConflictsQuery } from '../../services/brighthrApi';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { mockAbsenceData } from '../../__mocks__/brighthrApi';
-import { sortAbsences } from '../../utils/sortAbsences';
 import { Absence } from '../../types';
 import AbsenceList from './AbsenceList';
 
@@ -98,6 +97,4 @@ describe('<AbsenceList />', () => {
       expect(within(reverseSortedRows[index]).getByText(absence.employee.firstName + ' ' + absence.employee.lastName)).toBeInTheDocument();
     });
   });
-
-  
 });
