@@ -1,13 +1,13 @@
 import React from 'react';
 import { Absence } from '../../types';
-import { calculateEndDate } from '../../utils/calculateEndDate';
+import AbsenceRow from './AbsenceRow';
 
 export interface AbsenceListProps {
   data?: Absence[];
 }
 
 const AbsenceList: React.FC<AbsenceListProps> = ({ data }) => {
-  const headers = ['Start Date', 'End Date', 'Employee Name', 'approved/pending approval', 'Absence Type'];
+  const headers = ['Start Date', 'End Date', 'Employee Name', 'approved/pending approval', 'Absence Type', 'Conflicts'];
   return (
     <div className='relative overflow-x-auto'>
       <table data-testid="absence-list">
@@ -19,15 +19,9 @@ const AbsenceList: React.FC<AbsenceListProps> = ({ data }) => {
         </tr>
         </thead>
         <tbody>
-        {data?.map((absence) => (
-          <tr key={absence.id} data-testid="absence">
-          <td data-label={headers[0]}><span>{absence.startDate}</span></td>
-          <td data-label={headers[1]}><span>{calculateEndDate(absence.startDate, absence.days)}</span></td>
-          <td data-label={headers[2]}><span>{absence.employee.firstName} {absence.employee.lastName}</span></td>
-          <td data-label={headers[3]}><span>{absence.approved ? 'Approved' : 'Pending'}</span></td>
-          <td data-label={headers[4]}><span>{absence.absenceType}</span></td>
-          </tr>
-        ))}
+          {data?.map((absence) => (
+            <AbsenceRow key={absence.id} absence={absence} headers={headers} />
+          ))}
         </tbody>
       </table>
     </div>

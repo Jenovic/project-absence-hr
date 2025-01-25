@@ -8,7 +8,7 @@ export const brighthrApi = createApi({
         getAbsences: builder.query<Absence[], void>({
             query: () => 'absences'
         }),
-        getAbsenceConflicts: builder.query<conflictingAbsence, string>({
+        getAbsenceConflicts: builder.query<conflictingAbsence, number>({
             query: (id) => `conflict/${id}`
         }),
     }),

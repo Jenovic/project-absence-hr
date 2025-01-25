@@ -1,11 +1,33 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import App from './App';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+import { brighthrApi, useGetAbsencesQuery } from './services/brighthrApi';
 import ErrorBoundary from './components/ErrorBoundary';
+import App from './App';
+
+jest.mock('./services/brighthrApi', () => ({
+  ...jest.requireActual('./services/brighthrApi'),
+  useGetAbsencesQuery: jest.fn(),
+}));
 
 describe('App', () => {
   it('Should render app title', () => {
-    render(<App />);
+    const store = configureStore({
+      reducer: {
+        [brighthrApi.reducerPath]: brighthrApi.reducer,
+      },
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(brighthrApi.middleware),
+    });
+
+    (useGetAbsencesQuery as jest.Mock).mockReturnValue({
+      data: [],
+      error: null,
+      isLoading: false,
+    });
+    
+    render(<Provider store={store}><App /></Provider>);
     const linkElement = screen.getByRole('heading', { name: /Absence Manager/i });
     expect(linkElement).toBeInTheDocument();
   });

@@ -1,39 +1,41 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import AbsenceList from './AbsenceList';
+import { render, screen, waitFor } from '@testing-library/react';
 import { calculateEndDate } from '../../utils/calculateEndDate';
+import { brighthrApi, useGetAbsenceConflictsQuery } from '../../services/brighthrApi';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+import { mockAbsenceData } from '../../__mocks__/brighthrApi';
+import AbsenceList from './AbsenceList';
+
+jest.mock('../../services/brighthrApi', () => ({
+  ...jest.requireActual('../../services/brighthrApi'),
+  useGetAbsenceConflictsQuery: jest.fn(),
+}));
 
 describe('<AbsenceList />', () => {
-  const data = [
-    {
-      "id": 0,
-      "startDate": "2022-05-28T04:39:06.470Z",
-      "days": 9,
-      "absenceType": "SICKNESS",
-      "employee": {
-        "firstName": "Rahaf",
-        "lastName": "Deckard",
-        "id": "2ea05a52-4e31-450d-bbc4-5a6c73167d17"
-      },
-      "approved": true
-    },
-    {
-      "id": 1,
-      "startDate": "2022-02-08T08:02:47.543Z",
-      "days": 5,
-      "absenceType": "ANNUAL_LEAVE",
-      "employee": {
-        "firstName": "Enya",
-        "lastName": "Behm",
-        "id": "84502153-69e6-4561-b2de-8f21f97530d3"
-      },
-      "approved": false
-    },
-  ];
-
   beforeEach(() => {
-    render(<AbsenceList data={data} />);
+    const store = configureStore({
+      reducer: {
+        [brighthrApi.reducerPath]: brighthrApi.reducer,
+      },
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(brighthrApi.middleware),
+    });
+
+    (useGetAbsenceConflictsQuery as jest.Mock)
+      .mockReturnValueOnce({ data: { conflicts: false }, isLoading: false })
+      .mockReturnValueOnce({ data: { conflicts: true }, isLoading: false });
+  
+    render(
+      <Provider store={store}>
+        <AbsenceList data={mockAbsenceData} />
+      </Provider>
+    );
   });
+
+  afterEach(() => {
+    jest.resetAllMocks();
+  });  
 
   it('should render', () => {
     expect(screen.getByTestId('absence-list')).toBeInTheDocument();
@@ -52,9 +54,21 @@ describe('<AbsenceList />', () => {
   });
 
   it('should render the correct end date for each absence', () => {
-    data.forEach(absence => {
+    mockAbsenceData.forEach(absence => {
       const endDate = calculateEndDate(absence.startDate, absence.days);
       expect(screen.getByText(endDate)).toBeInTheDocument();
     });
   });
+
+  it('should render correct conflict data for each absence', async () => {
+    await waitFor(() => {
+      expect(screen.getByText('No Conflict')).toBeInTheDocument();
+      expect(screen.getByText('Conflict')).toBeInTheDocument();
+    });
+  
+    mockAbsenceData.forEach((absence) => {
+      expect(useGetAbsenceConflictsQuery).toHaveBeenCalledWith(absence.id);
+    });
+  });
+  
 });
