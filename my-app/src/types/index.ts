@@ -10,3 +10,7 @@ export interface Absence {
   };
   approved: boolean;
 }
+
+export interface conflictingAbsence {
+  conflicts: boolean;
+}
