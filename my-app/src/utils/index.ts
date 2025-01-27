@@ -1,4 +1,4 @@
 import { absenceListheaders } from "./constants";
-import { fetchCall, calculateEndDate, sortAbsences} from "./helper";
+import { calculateEndDate, sortAbsences} from "./helper";
 
-export { absenceListheaders, calculateEndDate, sortAbsences, fetchCall };
+export { absenceListheaders, calculateEndDate, sortAbsences };
